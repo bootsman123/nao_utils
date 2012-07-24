@@ -38,11 +38,14 @@ class State( QtCore.QState ):
         def getState( self ):
             return self.__state;
         
+        def getModel( self ):
+            return self.getState().getModel();
+        
         def isRunning( self ):
-            return self.getState().getModel().isRunning();
+            return self.getModel().isRunning();
         
         def isPaused( self ):
-            return self.getState().getModel().isPaused();
+            return self.getModel().isPaused();
         
     def __init__( self, parent = None, model = None ):
         QtCore.QState.__init__( self, parent );

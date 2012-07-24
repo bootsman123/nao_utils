@@ -122,8 +122,13 @@ class SetupGUI( QtGui.QMainWindow ):
         if( len( self.BinListModel.items() ) > 0 ):
             filePath = os.path.join( path, 'config.yaml' );
             
+            items = [];
+            
+            for item in self.BinListModel.items():
+                items.append( dict( x = item.x(), y = item.y(), width = item.width(), height = item.height() ) );
+            
             with open( filePath, 'w' ) as file:
-                yaml.dump( self.BinListModel.items(), file );
+                yaml.dump( items, file );
             
             rospy.loginfo( 'Saved bin settings to: {filePath}'.format( filePath = filePath ) );
         
@@ -194,8 +199,8 @@ class SetupGUI( QtGui.QMainWindow ):
         
     def handleBinAdd( self ):
         # Add the bin to the list.
-        objectRectangular = ObjectRectangular.fromCenter( self.__position.x(), self.__position.y() );
-        self.BinListModel.addItem( objectRectangular );
+        piece = PieceRectangular.fromCenter( self.__position.x(), self.__position.y() );
+        self.BinListModel.addItem( piece );
         
         # Redraw.
         self.ImageWidget.drawBins( self.BinListModel );

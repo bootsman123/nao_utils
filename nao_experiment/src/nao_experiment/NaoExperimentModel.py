@@ -22,6 +22,8 @@ except AttributeError:
 from nao_experiment.states.StateStart import StateStart;
 from nao_experiment.states.StateIntroduction import StateIntroduction;
 from nao_experiment.states.StateCollectingObjects import StateCollectingObjects;
+
+from pieces.PieceRectangular import PieceRectangular;
     
 class NaoExperimentModel( QtCore.QObject ):
     """
@@ -51,23 +53,29 @@ class NaoExperimentModel( QtCore.QObject ):
         # Hold a list of all the log messages.
         self.__log = [];
         
-        # Load objects.
-        objectsListPath = os.path.join( roslib.packages.get_pkg_dir( PACKAGE_NAME ), 'cfg' );
-        objectsListFilePath = os.path.join( objectsListPath, 'config.yaml' );
+        # Load pieces.
+        piecesPath = os.path.join( roslib.packages.get_pkg_dir( PACKAGE_NAME ), 'cfg' );
+        piecesFilePath = os.path.join( piecesPath, 'config.yaml' );
         
-        with open( objectsListFilePath, 'r' ) as objectsListFile:
-            self.__objectsList = yaml.load( objectsListFile );
+        with open( piecesFilePath, 'r' ) as pieces:
+            piecesData = yaml.load( pieces );
         
-        self.__objectsMapper = QtCore.QSignalMapper( self );
-        
-        for index, o in enumerate( self.__objectsList ):
-            #self.__objectsMapper.setMapping( o, index );
-            o.changed.connect( self.__objectsMapper.map );
+        self.__pieces = [];
+        for pieceData in piecesData:
+            piece = PieceRectangular( x = pieceData[ 'x' ],
+                                      y = pieceData[ 'y' ],
+                                      width = pieceData[ 'width' ],
+                                      height = pieceData[ 'height' ] );
+                                      
+            self.__pieces.append( piece );
         
         rospy.sleep( 1 );
         
         # Initialize.
         self.setupExperiment();
+    
+    def getPieces( self ):
+        return self.__pieces;
 
     def __del__( self ):
         self.__logSubscriber.unregister();

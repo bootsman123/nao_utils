@@ -1,12 +1,12 @@
 from pieces.Piece import Piece;
 from utils.Rectangle import Rectangle;
 
-class PieceRectangular( Object ):
+class PieceRectangular( Piece ):
     """
     PieceRectangular
     """
-    WIDTH = 40;
-    HEIGHT = 40;
+    WIDTH = 30;
+    HEIGHT = 30;
     
     def __init__( self, x, y, width = WIDTH, height = HEIGHT ):
         """
@@ -16,7 +16,7 @@ class PieceRectangular( Object ):
         @param width: Width of the object.
         @param height: Height of the object.
         """
-        Object.__init__( self );
+        Piece.__init__( self );
         
         self.__x = x;
         self.__y = y;
@@ -41,7 +41,7 @@ class PieceRectangular( Object ):
         topLeftX = x - width / 2;
         topLeftY = y - height / 2;
         
-        return ObjectRectangular( topLeftX, topLeftY, width, height );
+        return PieceRectangular( topLeftX, topLeftY, width, height );
         
     def get( self ):
         """
@@ -91,11 +91,3 @@ class PieceRectangular( Object ):
                                                          y = self.__y,
                                                          width = self.__width,
                                                          height = self.__height );
-    '''
-    def __repr__( self ):
-        return '{className}(x={x}, y={y}, width={width}, height={height})'.format( className = self.__class__.__name__,
-                                                                                   x = self.__x,
-                                                                                   y = self.__y,
-                                                                                   width = self.__width,
-                                                                                   height = self.__height );
-    '''

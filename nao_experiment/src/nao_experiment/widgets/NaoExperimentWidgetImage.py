@@ -5,6 +5,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s;
 
 from cmvision.msg import Blobs;
+from pieces.Piece import Piece;
 
 class NaoExperimentWidgetImage( QtGui.QWidget ):
     """
@@ -20,10 +21,12 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         # Initialize
         self.__qImage = None;
         self.__blobs = None;
+        self.__pieces = [];
    
     def paintEvent( self, event ):
         self.paintImage();
         self.paintBlobs();
+        self.paintPieces();
         
     def paintImage( self ):
         """
@@ -63,6 +66,29 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
                               
         painter.end();
         
+    def paintPieces( self ):
+        """
+        paintPieces
+        @param: painter
+        """
+        if( len( self.__pieces ) == 0 ):
+            return;
+        
+        painter = QtGui.QPainter();
+        painter.begin( self );
+
+        painter.setBrush( QtGui.QColor( 255, 255, 255, alpha = 150 ) );
+        
+        for piece in self.__pieces:
+            painter.drawRect( piece.x(),
+                              piece.y(),
+                              piece.width(),
+                              piece.height() );
+                              
+        self.__pieces[:];
+     
+        painter.end();
+        
     @QtCore.pyqtSlot( QtGui.QImage )
     def onImageChanged( self, qImage ):
         if( qImage.isNull() ):
@@ -80,8 +106,7 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         self.__blobs = blobs;
         self.update();
     
-    '''    
-    @QtCore.pyqtSlot()
-    def onObjectChanged( self, object ):
-        pass;
-    '''
+    @QtCore.pyqtSlot( Piece )
+    def onObjectChanged( self, piece ):
+        self.__pieces.append( piece );
+        self.update();

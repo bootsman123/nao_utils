@@ -34,10 +34,9 @@ class StateCollectingObjects( State ):
             State.Worker.__init__( self, state );
             
             self.__blobs = [];
-            self.__objects = [];
           
         def onRun( self ):
-            self.getState().getModel().blobsChanged.connect( self.onBlobsChanged );
+            self.getModel().blobsChanged.connect( self.onBlobsChanged );
             
             '''
             # Load the objects.
@@ -58,7 +57,7 @@ class StateCollectingObjects( State ):
             #self.__signalMapper.mapped.connect( );
             '''
             
-            # Look down at objects.
+            # Look down at the pieces.
             #Utils.getInstance().enableBodyStiffness();
             #Utils.getInstance().setBodyPose( 'headDown' );
             
@@ -67,8 +66,8 @@ class StateCollectingObjects( State ):
                 while( self.isPaused() ):
                     rospy.sleep( self.SLEEP_TIME );
                     
-                # Detect objects.
-                self.detectObjects( self.__objects, self.__blobs );
+                # Detect pieces.
+                self.detectPieces( self.getModel().getPieces(), self.__blobs );
                         
                 # Say the message.
                 speechMessage = 'Collecting objects';
@@ -80,30 +79,31 @@ class StateCollectingObjects( State ):
             
             self.finished.emit();
             
-        def detectObjects( self, objects, blobs ):
-            # Loop over all the objects.
-            for o in self.__objects:
+        def detectPieces( self, pieces, blobs ):
+            # Loop over all the pieces.
+            for piece in pieces:
                 isDetected = False;
                 
+                rectangle = None;
+                
                 # Loop over all the blobs.
-                for blob in blobs.blobs:
-                    r = Rectangle( top = blob.top,
+                for blob in blobs:
+                    rectangle = Rectangle( top = blob.top,
                                    left = blob.left,
                                    bottom = blob.bottom,
                                    right = blob.right );
 
-                    if( o.doesIntersectsWithRectangle( r ) ):
+                    if( piece.doesIntersectsWithRectangle( rectangle ) ):
                         isDetected = True;
                         break;
                     
                 # Set whether the object is detected or not.
-                o.isDetected( isDetected );
-                rospy.loginfo( 'Detected object {o}.'.format( o = o ) );
+                piece.setDetected( isDetected );
+                
+                print( piece );
+                print( rectangle );
+                print( isDetected );
 
         def onBlobsChanged( self, blobs ):
             if( self.isRunning() ):
                 self.__blobs = blobs.blobs;
-                
-                
-                #print( self.__objects );
-                #rospy.loginfo( 'Gotten {c} blobs.'.format( c = blobs.blob_count ) );

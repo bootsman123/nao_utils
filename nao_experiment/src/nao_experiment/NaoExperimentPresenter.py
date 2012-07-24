@@ -22,11 +22,21 @@ class NaoExperimentPresenter( QtCore.QObject ):
         self.__model.logChanged.connect( self.__view.onLogChanged );
         #self.__model.objectsChanged.connect( self.__view.onObjectsChanged );
         
+        
         # Attach to buttons.
         self.__view.ButtonStart.clicked.connect( self.onButtonStartClicked );
         self.__view.ButtonPauseResume.toggled.connect( self.onButtonPauseResumeToggled );
         self.__view.ButtonStop.clicked.connect( self.onButtonStopClicked );
         #self.__view.ButtonTools.toggled.connect( self.onButtonToolsToggled );
+        
+        # Setup a signal mapper for the individual pieces.
+        self.__piecesMapper = QtCore.QSignalMapper();
+        
+        for piece in self.__model.getPieces():
+            self.__piecesMapper.setMapping( piece, piece );
+            piece.changed.connect( self.__piecesMapper.map );
+            
+        self.__piecesMapper.mapped[ QtCore.QObject ].connect( self.__view.WidgetImage.onObjectChanged );
         
     def onButtonStartClicked( self ):
         if( not( self.__model.isRunning() ) ):

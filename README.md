@@ -1,5 +1,5 @@
 # Nao Experiment
-Code used for an experiment with our Nao. It is not functional yet, though should become in the next few weeks.
+Code used for an experiment with our Nao. It is not functional yet, though should become in the next few weeks. Furthermore, it contains many pieces of old code which should be removed anytime soon as well.
 
 ## Basic usage
 To start the 'Setup Interface':
