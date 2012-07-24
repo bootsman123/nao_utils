@@ -3,7 +3,9 @@ Code used for an experiment with our Nao. It is not functional yet, though shoul
 
 ## Basic usage
 To start the 'Setup Interface':
+
 	PARENT_IP=<NAO_IP> roslaunch nao_experiment setup_gui.launch
 
 After setting up the experiment, one can use:
+
 	PARENT_IP=<NAO_IP> roslaunch nao_experiment nao_experiment.launch
