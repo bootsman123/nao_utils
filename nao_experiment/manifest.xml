@@ -1,0 +1,25 @@
+<package>
+  <description brief="nao_experiment">
+     nao_experiment
+  </description>
+  <author>Bas Bootsma</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/nao_experiment</url>
+  <depend package="rospy"/>
+  <depend package="nao_core"/>
+  <depend package="nao_sensors"/>
+  <depend package="nao_blob_detection"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="trajectory_msgs"/>
+  <depend package="nao_msgs"/>
+  <depend package="humanoid_nav_msgs"/>
+  <depend package="actionlib"/>
+  <depend package="opencv2"/>
+  <depend package="cv_bridge"/>
+  <depend package="dynamic_reconfigure"/>
+  <depend package="rosgraph_msgs"/>
+</package>
+
+

@@ -1,0 +1,16 @@
+<launch>
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" />
+
+  <arg name="parent_ip" default="$(optenv PARENT_IP 127.0.0.1)" />
+  <arg name="parent_port" default="$(optenv PARENT_PORT 9559)" />
+
+  <!-- Publish camera and blob detection data topics. -->
+  <include file="$(find nao_blob_detection)/launch/nao_blob_detection.launch" />
+  
+  <node pkg="nao_experiment"
+  		type="Main.py"
+  		name="nao_experiment"
+  		required="true"
+  		args=""
+  		output="screen" />
+</launch>

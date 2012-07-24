@@ -1,0 +1,88 @@
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 39,
+    _Rectangle__left: 135, _Rectangle__right: 175, _Rectangle__top: -1}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 135
+  _ObjectRectangular__y: -1
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 83,
+    _Rectangle__left: 97, _Rectangle__right: 137, _Rectangle__top: 43}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 97
+  _ObjectRectangular__y: 43
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 109,
+    _Rectangle__left: 65, _Rectangle__right: 105, _Rectangle__top: 69}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 65
+  _ObjectRectangular__y: 69
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 197,
+    _Rectangle__left: 20, _Rectangle__right: 60, _Rectangle__top: 157}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 20
+  _ObjectRectangular__y: 157
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 199,
+    _Rectangle__left: 150, _Rectangle__right: 190, _Rectangle__top: 159}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 150
+  _ObjectRectangular__y: 159
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 204,
+    _Rectangle__left: 245, _Rectangle__right: 285, _Rectangle__top: 164}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 245
+  _ObjectRectangular__y: 164
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 200,
+    _Rectangle__left: 364, _Rectangle__right: 404, _Rectangle__top: 160}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 364
+  _ObjectRectangular__y: 160
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 197,
+    _Rectangle__left: 507, _Rectangle__right: 547, _Rectangle__top: 157}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 507
+  _ObjectRectangular__y: 157
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 123,
+    _Rectangle__left: 467, _Rectangle__right: 507, _Rectangle__top: 83}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 467
+  _ObjectRectangular__y: 83
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 88,
+    _Rectangle__left: 437, _Rectangle__right: 477, _Rectangle__top: 48}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 437
+  _ObjectRectangular__y: 48
+  _Object__isDetected: false
+- !!python/object:objects.ObjectRectangular.ObjectRectangular
+  _ObjectRectangular__height: 40
+  _ObjectRectangular__rectangle: !!python/object:utils.Rectangle.Rectangle {_Rectangle__bottom: 50,
+    _Rectangle__left: 417, _Rectangle__right: 457, _Rectangle__top: 10}
+  _ObjectRectangular__width: 40
+  _ObjectRectangular__x: 417
+  _ObjectRectangular__y: 10
+  _Object__isDetected: false

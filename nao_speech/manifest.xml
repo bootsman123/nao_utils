@@ -1,0 +1,16 @@
+<package>
+  <description brief="nao_speech">
+
+     nao_speech
+
+  </description>
+  <author>administrator</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/nao_speech</url>
+  <depend package="rospy"/>
+  <depend package="nao_core"/>
+  <depend package="std_msgs"/>
+</package>
+
+

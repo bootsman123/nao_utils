@@ -1,0 +1,23 @@
+<launch>
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" />
+
+  <arg name="parent_ip" default="$(optenv PARENT_IP 127.0.0.1)" />
+  <arg name="parent_port" default="$(optenv PARENT_PORT 9559)" />
+
+  <!-- Publish camera data. -->
+  <include file="$(find nao_camera)/launch/nao_camera.launch" />
+	
+  <!-- Launch blob detection. -->
+  <include file="$(find cmvision)/cmvision.launch">
+ 	<arg name="camera_topic" value="/nao_camera_processed/image_raw" />
+  </include>
+  <param name="cmvision/color_file" type="string" value="$(find nao_experiment)/cfg/colors.txt" />
+  <param name="cmvision/debug_on" type="bool" value="false" />
+  
+  <node pkg="nao_blob_detection"
+  		type="NaoBlobDetection.py"
+  		name="nao_blob_detection"
+  		required="true"
+  		args="--pip=$(arg parent_ip) --pport=$(arg parent_port)"
+  		output="screen" />
+</launch>

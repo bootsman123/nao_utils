@@ -1,0 +1,8 @@
+<stack>
+  <description brief="nao_utils">nao_utils</description>
+  <author>Maintained by administrator</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/nao_utils</url>
+  <depend stack="ros" />
+</stack>

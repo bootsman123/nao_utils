@@ -1,0 +1,10 @@
+\subsubsection usage Usage
+\verbatim
+<node name="nao_blob_detection" pkg="nao_blob_detection" type="nao_blob_detection">
+  <param name="xOffset" type="int" value="0" />
+  <param name="yOffset" type="int" value="0" />
+  <param name="width" type="int" value="0" />
+  <param name="height" type="int" value="0" />
+</node>
+\endverbatim
+

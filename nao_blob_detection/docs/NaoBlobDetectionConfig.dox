@@ -1,0 +1,9 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~xOffset" : \b [int] X offset of the cropping rectangle. min: 0, default: 0, max: 2048
+- \b "~yOffset" : \b [int] Y offset of the cropping rectangle. min: 0, default: 0, max: 2048
+- \b "~width" : \b [int] Width of the cropping rectangle. min: 0, default: 0, max: 2048
+- \b "~height" : \b [int] Height of the cropping rectangle. min: 0, default: 0, max: 2048
+

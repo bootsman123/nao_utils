@@ -1,0 +1,14 @@
+<launch>
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" />
+
+  <arg name="parent_ip" default="$(optenv PARENT_IP 127.0.0.1)" />
+  <arg name="parent_port" default="$(optenv PARENT_PORT 9559)" />
+
+  <node pkg="nao_landmark_detection"
+  		type="NaoLandmarkDetectionModule.py"
+  		name="nao_landmark_detection"
+  		required="true"
+  		args="--pip=$(arg parent_ip) --pport=$(arg parent_port)"
+  		output="screen"/>
+</launch>
+
