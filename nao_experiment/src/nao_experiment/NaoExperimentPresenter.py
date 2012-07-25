@@ -22,6 +22,8 @@ class NaoExperimentPresenter( QtCore.QObject ):
         self.__model.logChanged.connect( self.__view.onLogChanged );
         #self.__model.objectsChanged.connect( self.__view.onObjectsChanged );
         
+        self.__model.getStateCollectingObjects().piecesChanged.connect( self.__view.WidgetImage.onPiecesChanged );
+        #self.__model.blobsChanged.connect( self.__model.getStateCollectingObjects().getWorker().onBlobsChanged );
         
         # Attach to buttons.
         self.__view.ButtonStart.clicked.connect( self.onButtonStartClicked );
@@ -29,6 +31,7 @@ class NaoExperimentPresenter( QtCore.QObject ):
         self.__view.ButtonStop.clicked.connect( self.onButtonStopClicked );
         #self.__view.ButtonTools.toggled.connect( self.onButtonToolsToggled );
         
+        '''
         # Setup a signal mapper for the individual pieces.
         self.__piecesMapper = QtCore.QSignalMapper();
         
@@ -37,6 +40,7 @@ class NaoExperimentPresenter( QtCore.QObject ):
             piece.changed.connect( self.__piecesMapper.map );
             
         self.__piecesMapper.mapped[ QtCore.QObject ].connect( self.__view.WidgetImage.onObjectChanged );
+        '''
         
     def onButtonStartClicked( self ):
         if( not( self.__model.isRunning() ) ):

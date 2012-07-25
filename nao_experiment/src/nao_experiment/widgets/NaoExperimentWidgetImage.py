@@ -77,16 +77,19 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         painter = QtGui.QPainter();
         painter.begin( self );
 
-        painter.setBrush( QtGui.QColor( 255, 255, 255, alpha = 150 ) );
-        
+        painter.setPen( QtGui.QColor( 255, 255, 255, alpha = 255 ) );
+
         for piece in self.__pieces:
+            if( piece.isDetected() ):
+                painter.setBrush( QtGui.QColor( 255, 255, 255, alpha = 200 ) );
+            else:
+                painter.setBrush( QtCore.Qt.NoBrush );
+            
             painter.drawRect( piece.x(),
                               piece.y(),
                               piece.width(),
                               piece.height() );
-                              
-        self.__pieces[:];
-     
+
         painter.end();
         
     @QtCore.pyqtSlot( QtGui.QImage )
@@ -106,7 +109,14 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         self.__blobs = blobs;
         self.update();
     
+    @QtCore.pyqtSlot( list )
+    def onPiecesChanged( self, pieces ):
+        self.__pieces = pieces;
+        self.update();
+    
+    '''
     @QtCore.pyqtSlot( Piece )
     def onObjectChanged( self, piece ):
         self.__pieces.append( piece );
         self.update();
+    '''

@@ -7,6 +7,8 @@ import rospy;
 import os;
 import yaml;
 
+from cmvision.msg import Blobs;
+
 from PyQt4 import QtCore;
 try:
     _fromUtf8 = QtCore.QString.fromUtf8;
@@ -21,89 +23,67 @@ from nao_experiment.NaoExperimentUtils import NaoExperimentUtils as Utils;
 class StateCollectingObjects( State ):
     """
     StateCollectingObjects
-    """     
+    """
+    piecesChanged = QtCore.pyqtSignal( list );
+    
     def __init__( self, model ):
         State.__init__( self, model = model );
         
-        self.setWorker( StateCollectingObjects.StateCollectingObjectsWorker( self ) );
-    
-    class StateCollectingObjectsWorker( State.Worker ):
-        SLEEP_TIME = 1;
+    def onEntry( self, event ):
         
-        def __init__( self, state ):
-            State.Worker.__init__( self, state );
-            
-            self.__blobs = [];
+        self.__blobs = [];
+        
+        self.__blobsTopic = rospy.get_param( 'blobsTopic', '/blobs' );
+        self.__blobsSubscriber = rospy.Subscriber( self.__blobsTopic, Blobs, self.onBlobsReceived );
+        
+        # Look down at the pieces.
+        Utils.getInstance().enableBodyStiffness();
+        Utils.getInstance().setBodyPose( 'headDown' );
+        
+        State.onEntry( self, event );
+        
+    def onExit( self, event ):
+        self.__blobsSubscriber.unregister();
+        Utils.getInstance().disableBodyStiffness();
+        
+        State.onExit( self, event );
           
-        def onRun( self ):
-            self.getModel().blobsChanged.connect( self.onBlobsChanged );
-            
-            '''
-            # Load the objects.
-            configPath = os.path.join( roslib.packages.get_pkg_dir( PACKAGE_NAME ), 'cfg' );
-            filePath = os.path.join( configPath, 'config.yaml' );
-            
-            with open( filePath ) as file:
-                objectsListModel = yaml.load( file );
-                self.__objects = objectsListModel.items();
+    def onRun( self ):
+        if( not( self.shouldRun() ) ):
+            return;
                 
-            # Attach signal mapper.
-            self.__signalMapper = QtCore.QSignalMapper();
-            
-            for index, item in enumerate( self.__objects ):
-                #self.__signalMapper.setMapping( item, index );
-                item.changed.connect( self.__signalMapper.map );
-                
-            #self.__signalMapper.mapped.connect( );
-            '''
-            
-            # Look down at the pieces.
-            #Utils.getInstance().enableBodyStiffness();
-            #Utils.getInstance().setBodyPose( 'headDown' );
-            
-            while( self.isRunning() ):
-                # Sleep (will only sleep when needed).
-                while( self.isPaused() ):
-                    rospy.sleep( self.SLEEP_TIME );
+        # Detect pieces.
+        self.detectPieces( self.getModel().getPieces(), self.__blobs );
                     
-                # Detect pieces.
-                self.detectPieces( self.getModel().getPieces(), self.__blobs );
-                        
-                # Say the message.
-                speechMessage = 'Collecting objects';
-                Utils.getInstance().say( speechMessage );
-                
-                rospy.sleep( 10 * self.SLEEP_TIME );
+        # Say the message.
+        speechMessage = 'Collecting objects';
+        #Utils.getInstance().say( speechMessage );
+        
+        #self.finished.emit();
+        
+    def detectPieces( self, pieces, blobs ):
+        # Loop over all the pieces.
+        for piece in pieces:
+            isDetected = False;
             
-            #Utils.getInstance().disableBodyStiffness();
+            rectangle = None;
             
-            self.finished.emit();
-            
-        def detectPieces( self, pieces, blobs ):
-            # Loop over all the pieces.
-            for piece in pieces:
-                isDetected = False;
-                
-                rectangle = None;
-                
-                # Loop over all the blobs.
-                for blob in blobs:
-                    rectangle = Rectangle( top = blob.top,
-                                   left = blob.left,
-                                   bottom = blob.bottom,
-                                   right = blob.right );
+            # Loop over all the blobs.
+            for blob in blobs:
+                rectangle = Rectangle( top = blob.top,
+                                       left = blob.left,
+                                       bottom = blob.bottom,
+                                       right = blob.right );
 
-                    if( piece.doesIntersectsWithRectangle( rectangle ) ):
-                        isDetected = True;
-                        break;
-                    
-                # Set whether the object is detected or not.
-                piece.setDetected( isDetected );
+                if( piece.doesIntersectsWithRectangle( rectangle ) ):
+                    isDetected = True;
+                    break;
                 
-                print( piece );
-                print( rectangle );
-                print( isDetected );
+            # Set whether the object is detected or not.
+            piece.setDetected( isDetected );
+            
+        self.piecesChanged.emit( pieces );
 
-        def onBlobsChanged( self, blobs ):
-            if( self.isRunning() ):
-                self.__blobs = blobs.blobs;
+    @QtCore.pyqtSlot( Blobs )
+    def onBlobsReceived( self, blobs ):
+        self.__blobs = blobs.blobs;

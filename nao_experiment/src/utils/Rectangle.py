@@ -7,6 +7,6 @@ class Rectangle( object ):
         
     def doesIntersects( self, rectangle ):
         return not( rectangle.__left > self.__right or 
-                    rectangle.__right > self.__left or
+                    rectangle.__right < self.__left or
                     rectangle.__top > self.__bottom or
-                    rectangle.__bottom > self.__top );
+                    rectangle.__bottom < self.__top );

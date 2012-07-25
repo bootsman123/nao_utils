@@ -14,9 +14,9 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s;
 
-from NaoExperimentModel import NaoExperimentModel;
-from NaoExperimentView import NaoExperimentView;
-from NaoExperimentPresenter import NaoExperimentPresenter;
+from nao_experiment.NaoExperimentModel import NaoExperimentModel;
+from nao_experiment.NaoExperimentView import NaoExperimentView;
+from nao_experiment.NaoExperimentPresenter import NaoExperimentPresenter;
 
 if( __name__ == '__main__' ):
     App = QtGui.QApplication( sys.argv );

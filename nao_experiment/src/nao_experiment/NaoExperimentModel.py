@@ -20,7 +20,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s;
     
 from nao_experiment.states.StateStart import StateStart;
-from nao_experiment.states.StateIntroduction import StateIntroduction;
+#from nao_experiment.states.StateIntroduction import StateIntroduction;
 from nao_experiment.states.StateCollectingObjects import StateCollectingObjects;
 
 from pieces.PieceRectangular import PieceRectangular;
@@ -32,7 +32,6 @@ class NaoExperimentModel( QtCore.QObject ):
     imageChanged = QtCore.pyqtSignal( QtGui.QImage );
     blobsChanged = QtCore.pyqtSignal( Blobs );
     logChanged = QtCore.pyqtSignal( Log );
-    objectsChanged = QtCore.pyqtSignal( [] )
     
     def __init__( self ):
         QtCore.QObject.__init__( self );
@@ -106,6 +105,9 @@ class NaoExperimentModel( QtCore.QObject ):
 
         self.__stateMachine.setInitialState( self.__stateStart );
         
+    def getStateCollectingObjects( self ):
+        return self.__stateCollectingObjects;
+        
     def start( self ):
         self.__isRunning = True;
         self.__stateMachine.start();
@@ -164,4 +166,3 @@ class NaoExperimentModel( QtCore.QObject ):
         @param: data
         """
         self.blobsChanged.emit( data );
-    
