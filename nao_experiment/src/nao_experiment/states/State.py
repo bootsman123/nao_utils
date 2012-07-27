@@ -16,35 +16,66 @@ class State( QtCore.QState ):
     """
     State
     """
-    SLEEP_TIME = 1;
-    
-    finished = QtCore.pyqtSignal();
-    
+    class Worker( QtCore.QObject ):
+        """
+        Worker
+        """
+        SLEEP_TIME = 1;
+        
+        run = QtCore.pyqtSignal();
+        finished = QtCore.pyqtSignal();
+        
+        def __init__( self, state ):
+            QtCore.QObject.__init__( self );
+            
+            self.setState( state );
+        
+        @QtCore.pyqtSlot()
+        def onRun( self ):
+            pass;
+        
+        def setState( self, state ):
+            self.__state = state;
+            
+        def getState( self ):
+            return self.__state;
+        
+        def getModel( self ):
+            return self.getState().getModel();
+        
+        def isRunning( self ):
+            return self.getModel().isRunning();
+        
+        def isPaused( self ):
+            return self.getModel().isPaused();
+        
     def __init__( self, parent = None, model = None ):
         QtCore.QState.__init__( self, parent );
         
         self.setModel( model );
+        
+        self.setWorker( None );
+        self.setThread( None );
     
     def onEntry( self, event ):
         rospy.loginfo( 'Entering "{name}".'.format( name = re.sub( '(?<!^)(?=[A-Z])', ' ', self.__class__.__name__ ).upper() ) );
         
+        # Create the thread and move the worker to the thread.
+        self.setThread( QtCore.QThread() );
+        self.getWorker().moveToThread( self.__thread );
         
-        self.__timer = QtCore.QTimer( self );
-        self.__timer.timeout.connect( self.onRun );
-        self.__timer.destroyed.connect( self.onFinished );
+        # Connect signals.
+        self.getWorker().finished.connect( self.__thread.quit );
         
-        self.finished.connect( self.__timer.stop );
-        self.finished.connect( self.__timer.deleteLater );
+        self.getThread().started.connect( self.__worker.onRun );
+        self.getThread().finished.connect( self.onFinished );
+        self.getThread().finished.connect( self.__thread.deleteLater );
         
-        self.__timer.start( 50 );
+        # Start the thread and the worker.
+        self.getThread().start();
         
     def onExit( self, event ):
         rospy.loginfo( 'Exiting "{name}".'.format( name = re.sub( '(?<!^)(?=[A-Z])', ' ', self.__class__.__name__ ).upper() ) );
-      
-    def shouldRun( self ):
-        return ( self.__timer.isActive() and
-                 self.isRunning() and
-                 not( self.isPaused() ) );
       
     @QtCore.pyqtSlot()  
     def onFinished( self ):
@@ -56,8 +87,14 @@ class State( QtCore.QState ):
     def getModel( self ):
         return self.__model;
     
-    def isRunning( self ):
-        return self.getModel().isRunning();
+    def setThread( self, thread ):
+        self.__thread = thread;
+        
+    def getThread( self ):
+        return self.__thread;
     
-    def isPaused( self ):
-        return self.getModel().isPaused();
+    def setWorker( self, worker ):
+        self.__worker = worker;
+        
+    def getWorker( self ):
+        return self.__worker;

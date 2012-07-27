@@ -19,7 +19,7 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         QtGui.QWidget.__init__( self, parent );
         
         # Initialize
-        self.__qImage = None;
+        self.__image = None;
         self.__blobs = None;
         self.__pieces = [];
    
@@ -30,23 +30,24 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         
     def paintImage( self ):
         """
-        paintImage
-        @param: painter
+        Paint the image.
         """
-        if( self.__qImage is None ):
+        if( self.__image is None ):
+            return;
+        
+        if( self.__image.isNull() ):
             return;
 
         painter = QtGui.QPainter();
         painter.begin( self );
         
-        painter.drawImage( QtCore.QPoint( 0, 0 ), self.__qImage );
+        painter.drawImage( QtCore.QPoint( 0, 0 ), self.__image );
         
         painter.end();
         
     def paintBlobs( self ):
         """
-        paintBlobs
-        @param: painter
+        Paint all the blobs.
         """
         if( self.__blobs is None ):
             return;
@@ -68,23 +69,32 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         
     def paintPieces( self ):
         """
-        paintPieces
-        @param: painter
+        Paint all the pieces.
         """
         if( len( self.__pieces ) == 0 ):
             return;
-        
+
         painter = QtGui.QPainter();
         painter.begin( self );
 
-        painter.setPen( QtGui.QColor( 255, 255, 255, alpha = 255 ) );
-
+        painter.setPen( QtGui.QColor( 255, 255, 255, alpha = 255 ) );       
+        
+        # Set default brushes. 
+        brushNone = QtCore.Qt.NoBrush;
+        brushDetected = QtGui.QBrush( QtGui.QColor( 255, 255, 255, alpha = 150 ) );
+        brushHandling = QtGui.QBrush( QtGui.QColor( 255, 255, 255, alpha = 150 ), style = QtCore.Qt.Dense5Pattern );
+        brushHandled = QtGui.QBrush( QtGui.QColor( 255, 255, 255, alpha = 150 ), style = QtCore.Qt.DiagCrossPattern )
+        
         for piece in self.__pieces:
-            if( piece.isDetected() ):
-                painter.setBrush( QtGui.QColor( 255, 255, 255, alpha = 200 ) );
+            if( piece.getStatus() & Piece.HANDLED ):
+                painter.setBrush( brushHandled );
+            elif( piece.getStatus() & Piece.HANDLING ):
+                painter.setBrush( brushHandling );
+            elif( piece.getStatus() & Piece.DETECTED ):
+                painter.setBrush( brushDetected );
             else:
-                painter.setBrush( QtCore.Qt.NoBrush );
-            
+                painter.setBrush( brushNone );
+
             painter.drawRect( piece.x(),
                               piece.y(),
                               piece.width(),
@@ -93,14 +103,11 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
         painter.end();
         
     @QtCore.pyqtSlot( QtGui.QImage )
-    def onImageChanged( self, qImage ):
-        if( qImage.isNull() ):
-            return;
+    def onImageChanged( self, image ):
+        self.__image = image;
         
-        self.__qImage = qImage;
-        
-        self.setMinimumSize( qImage.width(), qImage.height() );
-        self.resize( qImage.width(), qImage.height() );
+        self.setMinimumSize( self.__image.width(), self.__image.height() );
+        self.resize( self.__image.width(), self.__image.height() );
         
         self.update();
         
@@ -113,10 +120,3 @@ class NaoExperimentWidgetImage( QtGui.QWidget ):
     def onPiecesChanged( self, pieces ):
         self.__pieces = pieces;
         self.update();
-    
-    '''
-    @QtCore.pyqtSlot( Piece )
-    def onObjectChanged( self, piece ):
-        self.__pieces.append( piece );
-        self.update();
-    '''

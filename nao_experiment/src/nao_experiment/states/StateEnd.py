@@ -7,34 +7,28 @@ import rospy;
 from nao_experiment.states.State import State;
 from nao_experiment.NaoExperimentUtils import NaoExperimentUtils as Utils;
 
-class StateIntroduction( State ):
+class StateEnd( State ):
     """
-    StateIntroduction
+    StateEnd
     """    
     def __init__( self, model ):
         State.__init__( self, model = model );
         
-        self.setWorker( StateIntroduction.StateIntroductionWorker( self ) );
+        self.setWorker( StateEnd.StateEndWorker( self ) );
         
-    class StateIntroductionWorker( State.Worker ):
+    class StateEndWorker( State.Worker ):
         """
-        StateIntroductionWorker
+        StateEndWorker
         """
         def __init__( self, state ):
             State.Worker.__init__( self, state );
            
         def onRun( self ):
             Utils.enableBodyStiffness();
+            
             Utils.getInstance().setBodyPose( 'headInitial' );
+            Utils.getInstance().say( 'Thank you for the experiment.' );
+            
             Utils.disableBodyStiffness();
-            
-            # Sleep if paused.
-            while( self.isPaused() ):
-                rospy.sleep( self.SLEEP_TIME );
-                    
-            # Say the message.
-            Utils.getInstance().say( 'Introduction.' );
-            
-            rospy.sleep( 3 * self.SLEEP_TIME );
             
             self.finished.emit();

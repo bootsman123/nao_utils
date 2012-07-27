@@ -21,8 +21,12 @@ except AttributeError:
     
 from nao_experiment.states.StateStart import StateStart;
 #from nao_experiment.states.StateIntroduction import StateIntroduction;
-from nao_experiment.states.StateCollectingObjects import StateCollectingObjects;
+from nao_experiment.states.StateCollectingPieces import StateCollectingPieces;
+from nao_experiment.states.StateEvaluatingPieces import StateEvaluatingPieces;
+from nao_experiment.states.StateEnd import StateEnd;
 
+from utils.Rectangle import Rectangle;
+from pieces.Piece import Piece;
 from pieces.PieceRectangular import PieceRectangular;
     
 class NaoExperimentModel( QtCore.QObject ):
@@ -32,6 +36,7 @@ class NaoExperimentModel( QtCore.QObject ):
     imageChanged = QtCore.pyqtSignal( QtGui.QImage );
     blobsChanged = QtCore.pyqtSignal( Blobs );
     logChanged = QtCore.pyqtSignal( Log );
+    piecesChanged = QtCore.pyqtSignal( list );
     
     def __init__( self ):
         QtCore.QObject.__init__( self );
@@ -49,17 +54,34 @@ class NaoExperimentModel( QtCore.QObject ):
         self.__blobsTopic = rospy.get_param( 'blobsTopic', '/blobs' );
         self.__blobsSubscriber = rospy.Subscriber( self.__blobsTopic, Blobs, self.onBlobsReceived );
         
-        # Hold a list of all the log messages.
+        # Initialize variables.
         self.__log = [];
+        self.__blobs = [];
+        self.__pieces = [];
+        self.__image = None;
         
-        # Load pieces.
+        self.__isRunning = False;
+        self.__isPaused = False;
+        
+        # Setup.
+        self.setupPieces();
+        self.setupStateMachine();
+
+    def __del__( self ):
+        self.__logSubscriber.unregister();
+        self.__cameraSubscriber.unregister();
+        self.__blobsSubscriber.unregister();
+        
+    def setupPieces( self ):
+        """
+        setupPieces
+        """
         piecesPath = os.path.join( roslib.packages.get_pkg_dir( PACKAGE_NAME ), 'cfg' );
-        piecesFilePath = os.path.join( piecesPath, 'config.yaml' );
+        piecesFilePath = os.path.join( piecesPath, 'pieces.yaml' );
         
         with open( piecesFilePath, 'r' ) as pieces:
             piecesData = yaml.load( pieces );
         
-        self.__pieces = [];
         for pieceData in piecesData:
             piece = PieceRectangular( x = pieceData[ 'x' ],
                                       y = pieceData[ 'y' ],
@@ -67,46 +89,35 @@ class NaoExperimentModel( QtCore.QObject ):
                                       height = pieceData[ 'height' ] );
                                       
             self.__pieces.append( piece );
-        
-        rospy.sleep( 1 );
-        
-        # Initialize.
-        self.setupExperiment();
     
-    def getPieces( self ):
-        return self.__pieces;
-
-    def __del__( self ):
-        self.__logSubscriber.unregister();
-        self.__cameraSubscriber.unregister();
-        self.__blobsSubscriber.unregister();
-    
-    def setupExperiment( self ):
-        # Initialize.
-        self.__isRunning = False;
-        self.__isPaused = False;
-        
+    def setupStateMachine( self ):
+        """
+        setupStateMachine
+        """
          # Create states.
         self.__stateStart = StateStart( model = self );
         #self.__stateIntroduction = StateIntroduction( model = self );
-        self.__stateCollectingObjects = StateCollectingObjects( model = self );
+        self.__stateCollectingPieces = StateCollectingPieces( model = self );
+        self.__stateEvaluatingPieces = StateEvaluatingPieces( model = self );
+        self.__stateEnd = StateEnd( model = self );
 
         # Setup state machine.
         self.__stateMachine = QtCore.QStateMachine();
         self.__stateMachine.addState( self.__stateStart );
         #self.__stateMachine.addState( self.__stateIntroduction );
-        self.__stateMachine.addState( self.__stateCollectingObjects );
+        self.__stateMachine.addState( self. __stateCollectingPieces );
+        self.__stateMachine.addState( self. __stateEvaluatingPieces );
+        self.__stateMachine.addState( self. __stateEnd );
         
         # Add transitions.
         #self.__stateStart.addTransition( self.__stateStart, QtCore.SIGNAL( 'finished()' ), self.__stateIntroduction );
-        #self.__stateIntroduction.addTransition( self.__stateIntroduction, QtCore.SIGNAL( 'finished()' ), self.__stateCollectingObjects );
+        #self.__stateIntroduction.addTransition( self.__stateIntroduction, QtCore.SIGNAL( 'finished()' ), self.__stateCollectingPieces );
 
-        self.__stateStart.addTransition( self.__stateStart, QtCore.SIGNAL( 'finished()' ), self.__stateCollectingObjects );
+        self.__stateStart.addTransition( self.__stateStart, QtCore.SIGNAL( 'finished()' ), self.__stateCollectingPieces );
+        self.__stateCollectingPieces.addTransition( self.__stateCollectingPieces, QtCore.SIGNAL( 'finished()' ), self.__stateEvaluatingPieces );
+        self.__stateEvaluatingPieces.addTransition( self.__stateEvaluatingPieces, QtCore.SIGNAL( 'finished()' ), self.__stateEnd );
 
         self.__stateMachine.setInitialState( self.__stateStart );
-        
-    def getStateCollectingObjects( self ):
-        return self.__stateCollectingObjects;
         
     def start( self ):
         self.__isRunning = True;
@@ -127,23 +138,75 @@ class NaoExperimentModel( QtCore.QObject ):
     
     def isPaused( self ):
         return self.__isPaused;
+    
+    def getPieces( self ):
+        """
+        Returns the list of all the pieces.
+        @return: A list of all the pieces.
+        """
+        return self.__pieces;
+    
+    def getBlobs( self ):
+        """
+        Returns the latest received list of blobs.
+        @return: A list of blobs.
+        """
+        return self.__blobs;
+    
+    def getImage( self ):
+        """
+        Return the latest received image.
+        @return: An image.
+        """
+        return self.__image;
+    
+    def detectPieces( self ):
+        if( len( self.getPieces() ) == 0 ):
+            return;
         
-    def onLogReceived( self, data ):
+        if( len( self.getBlobs() ) == 0 ):
+            return;
+        
+        # Loop over all the pieces.
+        for piece in self.getPieces():
+            isDetected = False;
+            
+            # Loop over all the blobs.
+            for blob in self.getBlobs():
+                rectangle = Rectangle( top = blob.top,
+                                       left = blob.left,
+                                       bottom = blob.bottom,
+                                       right = blob.right );
+
+                if( piece.doesIntersectsWithRectangle( rectangle ) ):
+                    isDetected = True;
+                    break;
+                
+            # Set whether the object is detected or not.
+            if( isDetected ):
+                piece.addStatus( Piece.DETECTED );
+            else:
+                piece.removeStatus( Piece.DETECTED );
+            
+        # Notify when all pieces have been changed.
+        self.piecesChanged.emit( self.getPieces() );
+        
+    def onLogReceived( self, log ):
         """
         onLogReceived
         @param: data
         """
         # We only want to capture nodes from the experiment.
-        if( data.name == rospy.get_name() ):
-            self.__log.append( data );
-            self.logChanged.emit( data );
+        if( log.name == rospy.get_name() ):
+            self.__log.append( log );
+            self.logChanged.emit( log );
 
-    def onImageReceived( self, data ):
+    def onImageReceived( self, image ):
         """
         onImageReceived
         @param: data
         """
-        openCVMatrix = self.__cvBridge.imgmsg_to_cv( data );
+        openCVMatrix = self.__cvBridge.imgmsg_to_cv( image );
         
         # Convert from BGR to RGB.
         cv.CvtColor( openCVMatrix, openCVMatrix, cv.CV_BGR2RGB );
@@ -152,17 +215,20 @@ class NaoExperimentModel( QtCore.QObject ):
         self.__imageStringData = openCVMatrix.tostring();
         
         # Create QImage.
-        self.__qImage = QtGui.QImage( self.__imageStringData,
-                               data.width,
-                               data.height,
-                               openCVMatrix.step,
-                               QtGui.QImage.Format_RGB888 );
+        self.__image = QtGui.QImage( self.__imageStringData,
+                                    image.width,
+                                    image.height,
+                                    openCVMatrix.step,
+                                    QtGui.QImage.Format_RGB888 );
  
-        self.imageChanged.emit( self.__qImage );
+        self.imageChanged.emit( self.__image );
         
-    def onBlobsReceived( self, data ):
+    def onBlobsReceived( self, blobs ):
         """
         onImageReceived
-        @param: data
+        @param: blobs
         """
-        self.blobsChanged.emit( data );
+        self.__blobs = blobs.blobs;
+        self.detectPieces();
+        
+        self.blobsChanged.emit( blobs );

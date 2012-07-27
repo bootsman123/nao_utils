@@ -1,0 +1,32 @@
+<launch>
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" />
+
+  <arg name="parent_ip" default="$(optenv PARENT_IP 127.0.0.1)" />
+  <arg name="parent_port" default="$(optenv PARENT_PORT 9559)" />
+
+  <!-- Publish camera and blob detection data topics. -->
+  <include file="$(find nao_blob_detection)/launch/nao_blob_detection.launch" />
+  
+  <node pkg="nao_driver"
+  		type="nao_controller.py"
+  		name="nao_controller"
+  		required="true"
+  		args="--pip=$(arg parent_ip) --pport=$(arg parent_port)"
+  		output="screen">
+  		<!--<param name="init_stiffness" value="0.7" type="double" />-->
+  </node>
+  
+  <!-- Pose manager for certain basic poses. -->
+  <node pkg="nao_remote"
+  		type="pose_manager.py"
+  		name="pose_manager"
+  		output="screen">
+		<rosparam file="$(find nao_experiment)/cfg/poses.yaml" command="load" ns="poses" />
+  </node>
+  
+  <!-- Publish sensor data topic. -->
+  <include file="$(find nao_sensors)/launch/nao_sensors.launch" />
+  
+  <!-- Publish speech topic. -->
+  <include file="$(find nao_speech)/launch/nao_speech.launch" />
+</launch>

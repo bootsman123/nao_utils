@@ -1,0 +1,40 @@
+rightArmInitial:
+  joint_names: [ 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2.0
+  positions: [ 0.934248, -0.165714, 0.550664, 1.161280, 0.627364, 1.0 ]
+headAndRightArmInitial:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 1.5
+  positions: [ 0.0, 0.179436, 0.934248, -0.165714, 0.550664, 1.161280, 0.627364, 1.0  ]
+leftArmInitial:
+  joint_names: [ 'LShoulderPitch', 'LShoulderRoll', 'LElbowYaw', 'LElbowRoll', 'LWristYaw', 'LHand' ]
+  time_from_start: 2.0
+  positions: [ 0.972514, 0.230058, -0.662730, -1.306926, -0.066004, 1.0 ]
+headAndLeftArmInitial:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'LShoulderPitch', 'LShoulderRoll', 'LElbowYaw', 'LElbowRoll', 'LWristYaw', 'LHand' ]
+  time_from_start: 1.5
+  positions: [ 0.0, 0.179436, 0.972514, 0.230058, -0.662730, -1.306926, -0.066004, 1.0 ]
+headAndArmsInitial:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand', 'LShoulderPitch', 'LShoulderRoll', 'LElbowYaw', 'LElbowRoll', 'LWristYaw', 'LHand' ]
+  time_from_start: 1.5
+  positions: [ 0.0, 0.179436, 0.934248, -0.165714, 0.550664, 1.161280, 0.627364, 1.0, 0.972514, 0.230058, -0.662730, -1.306926, -0.066004, 1.0 ] 
+laneOne:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2
+  positions: [ -0.250084, 0.514872, 0.529272, -0.408086, -0.061402, 0.569156, 0.194776, 1.0 ]
+laneTwo:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2
+  positions: [ -0.204064, 0.514872, 0.507796, -0.276162, -0.265424, 0.635118, 0.271476, 1.0 ]
+laneThree:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2
+  positions: [ 0.0, 0.514872, 0.566088, -0.009246, -0.378940, 0.628982, 0.351244, 1.0 ]
+laneFour:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2
+  positions: [ 0.090464, 0.514872, 0.549130, 0.111940, -0.001576, -0.257670, -0.061402, 1.0 ]
+laneFive:
+  joint_names: [ 'HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw', 'RHand' ]
+  time_from_start: 2
+  positions: [ 0.207048, 0.514872, 0.584412, 0.288350, 0.007628, -0.248466, -0.061402, 1.0 ]   

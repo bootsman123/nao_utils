@@ -101,7 +101,7 @@ class SetupGUI( QtGui.QMainWindow ):
         if( len( self.ColorListModel.items() ) > 0 ):
             filePath = os.path.join( path, 'colors.txt' );
             
-            with open( fileName, 'w' ) as file:
+            with open( filePath, 'w' ) as file:
                 colors = '';
                 thresholds = '';
                 
@@ -120,7 +120,7 @@ class SetupGUI( QtGui.QMainWindow ):
         
         # Save bin file.
         if( len( self.BinListModel.items() ) > 0 ):
-            filePath = os.path.join( path, 'config.yaml' );
+            filePath = os.path.join( path, 'pieces.yaml' );
             
             items = [];
             
