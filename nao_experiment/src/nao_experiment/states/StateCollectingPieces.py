@@ -59,7 +59,7 @@ class StateCollectingPieces( State ):
                 # Select a new piece, if there is none.
                 if( currentCollectablePiece is None ):
                     currentCollectablePiece = collectablePieces.pop();
-                    rospy.loginfo( 'Piece X has to be collected.' );
+                    #rospy.loginfo( 'Piece X has to be collected.' );
                 
                 # Handle the piece.
                 if( lastActionTime is None ):
@@ -90,8 +90,6 @@ class StateCollectingPieces( State ):
                         bodyPose = 'laneFour';
                     else:
                         bodyPose = 'laneFive';
-
-                    rospy.loginfo( bodyPose );
                     
                     # Point.
                     Utils.getInstance().setBodyPose( bodyPose );
@@ -113,7 +111,7 @@ class StateCollectingPieces( State ):
                     # Check if the user has take the object.
                     if( not( currentCollectablePiece.getStatus() & Piece.DETECTED ) ):
                         rospy.loginfo( 'Piece X has been collected.' );
-                        Utils.getInstance.say( 'Well done.' );
+                        Utils.getInstance().say( 'Well done.' );
                         
                         currentCollectablePiece.changeStatus( Piece.HANDLING, Piece.HANDLED );
                         currentCollectablePiece = None;

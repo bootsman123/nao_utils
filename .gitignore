@@ -9,3 +9,4 @@ srv_gen/
 .cproject
 .pydevproject
 cmake_install.cmake
+.cfgc
