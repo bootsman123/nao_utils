@@ -27,7 +27,7 @@ class StateEvaluatingPieces( State ):
             Utils.getInstance().enableBodyStiffness();
             
             Utils.getInstance().setBodyPose( 'headInitial' );
-            Utils.getInstance().say( 'Make something your like out of the pieces you just picked.' );
+            Utils.getInstance().say( 'Make something you think I would like out of the pieces you just picked.' );
             
             rospy.sleep( 2 * self.SLEEP_TIME );
             
@@ -37,7 +37,7 @@ class StateEvaluatingPieces( State ):
             
             Utils.getInstance().say( 'Lets see what you have made.' );
             
-            rospy.sleep( 2 * self.SLEEP_TIME );
+            rospy.sleep( 4 * self.SLEEP_TIME );
             
             Utils.getInstance().setBodyPose( 'headInitial' );
             Utils.getInstance().say( 'It looks interesting, but I think you can do better.' );

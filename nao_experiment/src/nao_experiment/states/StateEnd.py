@@ -24,11 +24,11 @@ class StateEnd( State ):
             State.Worker.__init__( self, state );
            
         def onRun( self ):
-            Utils.enableBodyStiffness();
+            Utils.getInstance().enableBodyStiffness();
             
             Utils.getInstance().setBodyPose( 'headInitial' );
             Utils.getInstance().say( 'Thank you for the experiment.' );
             
-            Utils.disableBodyStiffness();
+            Utils.getInstance().disableBodyStiffness();
             
             self.finished.emit();

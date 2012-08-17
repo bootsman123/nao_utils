@@ -35,9 +35,7 @@ class StateStart( State ):
             sensorsTactileButtonTopic = rospy.get_param( 'sensorsTopic', '/nao_sensors_tactile_button' );
             sensorsTactileButtonSubscriber = rospy.Subscriber( sensorsTactileButtonTopic, nao_sensors.msg.TactileButton, self.onTactileButtonPressed );         
             
-            speechMessage = 'Start.';
-            #speechMessage = 'Hi, I am Naomi. If you want to start the experiment touch my head.';
-
+            speechMessage = 'Hi, I am Naomi. Touch my head to start the experiment.';
             lastSpeechTime = rospy.Time.now() - self.SPEECH_INTERVAL; # So that Naomi will immediatly start talking, instead of X seconds later.
             
             # Sit down.
